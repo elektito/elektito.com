@@ -17,6 +17,7 @@ if [ ! -f "cert.pem" ]; then
     exit 1
 fi
 
+apt update
 apt install -y nginx
 
 curl -L "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" -o go.tar.gz
