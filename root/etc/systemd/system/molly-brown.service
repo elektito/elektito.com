@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 Restart=always
-User=ubuntu
+User=root
 ExecStart=/usr/local/go/bin/molly-brown -c /etc/molly.conf
 
 [Install]
