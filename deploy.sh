@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+set -e
+
 GO_VERSION=${GO_VERSION:-1.20.2}
 
 if [ "$(id -u)" -ne 0 ]; then
