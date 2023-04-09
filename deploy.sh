@@ -31,7 +31,7 @@ if ! grep 'PATH=$PATH:/usr/local/go/bin' ~/.bashrc >/dev/null ; then
     echo 'PATH=$PATH:/usr/local/go/bin' >>~/.bashrc
 fi
 
-GOBIN=/usr/local/go/bin /usr/local/go/bin/go install tildegit.org/solderpunk/molly-brown@latest
+GOBIN=/usr/local/go/bin /usr/local/go/bin/go install github.com/elektito/hodhod@latest
 
 mkdir -p /var/gemini
 
@@ -40,12 +40,13 @@ rm -rf elektito.com-gemini
 git clone https://github.com/elektito/elektito.com-gemini.git
 rsync -r --delete elektito.com-gemini/capsule/ /var/gemini/gem/
 
-cp key.pem /var/gemini/
-cp cert.pem /var/gemini/
+mkdir -p /etc/gemini/certs
+cp key.pem /etc/gemini/certs/elektito.com.key
+cp cert.pem /etc/gemini/certs/elektito.com.cer
 
 systemctl daemon-reload
 
-systemctl enable molly-brown
-systemctl restart molly-brown
+systemctl enable hodhod
+systemctl restart hodhod
 
 systemctl reload nginx

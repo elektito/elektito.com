@@ -1,0 +1,20 @@
+{
+    "routes": [
+        {
+            "hostname": "elektito.com",
+            "backend": "elektito"
+        }
+    ],
+    "backends": [
+        {
+            "name": "elektito",
+            "location": "/var/gemini/elektito.com/"
+        }
+    ],
+    "certs": [
+        {
+            "cert": "/etc/gemini/certs/elektito.com.cer",
+            "key": "/etc/gemini/certs/elektito.com.key"
+        }
+    ]
+}
