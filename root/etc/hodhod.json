@@ -8,6 +8,7 @@
     "backends": [
         {
             "name": "elektito",
+            "type": "static",
             "location": "/var/gemini/elektito.com/"
         }
     ],
