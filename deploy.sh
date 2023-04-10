@@ -38,7 +38,7 @@ mkdir -p /var/gemini
 cp -r root/* /
 rm -rf elektito.com-gemini
 git clone https://github.com/elektito/elektito.com-gemini.git
-rsync -r --delete elektito.com-gemini/capsule/ /var/gemini/gem/
+rsync -r --delete elektito.com-gemini/capsule/ /var/gemini/elektito.com/
 
 mkdir -p /etc/gemini/certs
 cp key.pem /etc/gemini/certs/elektito.com.key
