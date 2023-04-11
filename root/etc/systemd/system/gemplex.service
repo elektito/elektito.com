@@ -1,0 +1,12 @@
+[Unit]
+Description=Gemplex
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+User=root
+ExecStart=/root/go/bin/gemplex all
+
+[Install]
+WantedBy=multi-user.target

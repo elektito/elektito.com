@@ -4,6 +4,18 @@
         {
             "hostname": "elektito.com",
             "backend": "elektito"
+        },
+        {
+            "prefix": "gemplex.space/search",
+            "backend": "gemplex-cgi"
+        },
+        {
+            "prefix": "gemplex.space/v/search",
+            "backend": "gemplex-cgi"
+        },
+        {
+            "hostname": "gemplex.space",
+            "backend": "gemplex-static"
         }
     ],
     "backends": [
@@ -11,12 +23,26 @@
             "name": "elektito",
             "type": "static",
             "location": "/var/gemini/elektito.com/"
+        },
+        {
+            "name": "gemplex-static",
+            "type": "static",
+            "location": "/var/gemini/gemplex.space/"
+        },
+        {
+            "name": "gemplex-cgi",
+            "type": "cgi",
+            "script": "/root/go/bin/gpcgi"
         }
     ],
     "certs": [
         {
             "cert": "/etc/gemini/certs/elektito.com.cer",
             "key": "/etc/gemini/certs/elektito.com.key"
+        },
+        {
+            "cert": "/etc/gemini/certs/gemplex.space.cer",
+            "key": "/etc/gemini/certs/gemplex.space.key"
         }
     ]
 }

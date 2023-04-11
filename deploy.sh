@@ -9,15 +9,17 @@ if [ "$(id -u)" -ne 0 ]; then
   exit 1
 fi
 
-if [ ! -f "key.pem" ]; then
+files=elektito.com.cer \
+  elektito.com.key \
+  gemplex.space.cer \
+  gemplex.space.key
+
+for file in ${files}; do
+  if [ ! -f "$file" ]; then
     echo "key.pem does not exist."
     exit 1
-fi
-
-if [ ! -f "cert.pem" ]; then
-    echo "cert.pem does not exist."
-    exit 1
-fi
+  fi
+done
 
 apt update
 apt install -y nginx
@@ -32,21 +34,32 @@ if ! grep 'PATH=$PATH:/usr/local/go/bin' ~/.bashrc >/dev/null ; then
 fi
 
 GOBIN=/usr/local/go/bin /usr/local/go/bin/go install github.com/elektito/hodhod@latest
+GOBIN=/usr/local/go/bin /usr/local/go/bin/go install github.com/elektito/gemplex@latest
 
 mkdir -p /var/gemini
 
 cp -r root/* /
+
 rm -rf elektito.com-gemini
 git clone https://github.com/elektito/elektito.com-gemini.git
 rsync -r --delete elektito.com-gemini/capsule/ /var/gemini/elektito.com/
 
+rm -rf gemplex
+git clone https://github.com/elektito/gemplex.git
+rsync -r --delete gemplex/capsule/ /var/gemini/gemplex.space/
+
 mkdir -p /etc/gemini/certs
-cp key.pem /etc/gemini/certs/elektito.com.key
-cp cert.pem /etc/gemini/certs/elektito.com.cer
+cp elektito.com.key /etc/gemini/certs/
+cp elektito.com.cer /etc/gemini/certs/
+cp gemplex.space.key /etc/gemini/certs/
+cp gemplex.space.cer /etc/gemini/certs/
 
 systemctl daemon-reload
 
 systemctl enable hodhod
 systemctl restart hodhod
+
+systemctl enable gemplex
+systemctl restart gemplex
 
 systemctl reload nginx
