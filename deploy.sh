@@ -9,14 +9,11 @@ if [ "$(id -u)" -ne 0 ]; then
   exit 1
 fi
 
-files=elektito.com.cer \
-  elektito.com.key \
-  gemplex.space.cer \
-  gemplex.space.key
+files="elektito.com.cer elektito.com.key gemplex.space.cer gemplex.space.key"
 
 for file in ${files}; do
   if [ ! -f "$file" ]; then
-    echo "key.pem does not exist."
+    echo "$file does not exist."
     exit 1
   fi
 done
@@ -34,7 +31,13 @@ if ! grep 'PATH=$PATH:/usr/local/go/bin' ~/.bashrc >/dev/null ; then
 fi
 
 GOBIN=/usr/local/go/bin /usr/local/go/bin/go install github.com/elektito/hodhod@latest
-GOBIN=/usr/local/go/bin /usr/local/go/bin/go install github.com/elektito/gemplex@latest
+
+rm -rf gemplex
+git clone --depth=1 https://github.com/elektito/gemplex.git
+cd gemplex
+make release
+make install
+cd ..
 
 mkdir -p /var/gemini
 

@@ -6,7 +6,7 @@ After=network.target
 Type=simple
 Restart=always
 User=root
-ExecStart=/root/go/bin/gemplex all
+ExecStart=/opt/gemplex/gemplex all
 
 [Install]
 WantedBy=multi-user.target

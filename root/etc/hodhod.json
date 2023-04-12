@@ -32,7 +32,7 @@
         {
             "name": "gemplex-cgi",
             "type": "cgi",
-            "script": "/root/go/bin/gpcgi"
+            "script": "/opt/gemplex/gpcgi"
         }
     ],
     "certs": [
