@@ -57,6 +57,10 @@ cp elektito.com.cer /etc/gemini/certs/
 cp gemplex.space.key /etc/gemini/certs/
 cp gemplex.space.cer /etc/gemini/certs/
 
+useradd gemplex || true
+mkdir -p /var/lib/gemplex
+chown gemplex:gemplex /var/lib/gemplex
+
 systemctl daemon-reload
 
 systemctl enable hodhod
