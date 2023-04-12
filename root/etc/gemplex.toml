@@ -1,0 +1,5 @@
+[db]
+name = "gemplex"
+
+[index]
+path = "/var/lib/gemplex/"
