@@ -3,6 +3,7 @@
 set -e
 
 GO_VERSION=${GO_VERSION:-1.20.2}
+GOLANG_MIGRATE_VERSION=${GOLANG_MIGRATE_VERSION:-4.15.2}
 
 if [ "$(id -u)" -ne 0 ]; then
   echo "The script needs to be run as root."
@@ -19,10 +20,17 @@ for file in ${files}; do
 done
 
 apt update
-apt install -y nginx
+apt install -y nginx postgresql-14
 
-curl -L "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" -o go.tar.gz
-rm -rf /usr/local/go && tar -C /usr/local -xzf go.tar.gz
+if [ ! -e /usr/local/go ]; then
+  curl -L "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" -o go.tar.gz
+  tar -C /usr/local -xzf go.tar.gz
+fi
+
+if [ ! -e /usr/local/bin/migrate ]; then
+  curl -L "https://github.com/golang-migrate/migrate/releases/download/v${GOLANG_MIGRATE_VERSION}/migrate.linux-amd64.tar.gz" -o migrate.tar.gz
+  tar -C /usr/local/bin -xf migrate.tar.gz migrate
+fi
 
 # Not really necessary for this script, but helpful if the root user wants to
 # run some go commands manually.
@@ -30,7 +38,9 @@ if ! grep 'PATH=$PATH:/usr/local/go/bin' ~/.bashrc >/dev/null ; then
     echo 'PATH=$PATH:/usr/local/go/bin' >>~/.bashrc
 fi
 
-GOBIN=/usr/local/go/bin /usr/local/go/bin/go install github.com/elektito/hodhod@latest
+export GOBIN=/usr/local/go/bin
+export GOPROXY=direct
+/usr/local/go/bin/go install github.com/elektito/hodhod@latest
 
 rm -rf gemplex
 git clone --depth=1 https://github.com/elektito/gemplex.git
@@ -60,6 +70,14 @@ cp gemplex.space.cer /etc/gemini/certs/
 useradd gemplex || true
 mkdir -p /var/lib/gemplex
 chown gemplex:gemplex /var/lib/gemplex
+
+sudo -u postgres psql -c 'create database gemplex' || true
+sudo -u postgres psql -c 'create role gemplex' || true
+sudo -u postgres psql -c 'grant all on database gemplex to gemplex' || true
+
+cp -r gemplex/db/migrations /tmp
+chown -R gemplex:gemplex /tmp/migrations/
+sudo -u gemplex migrate -database postgres:///gemplex?host=/var/run/postgresql -path /tmp/migrations/ up
 
 systemctl daemon-reload
 
