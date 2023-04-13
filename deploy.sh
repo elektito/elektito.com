@@ -75,10 +75,12 @@ sudo -u postgres psql -c 'create database gemplex' || true
 sudo -u postgres psql -c 'create role gemplex' || true
 sudo -u postgres psql -c 'grant all on database gemplex to gemplex' || true
 
+echo "Migrating database..."
 cp -r gemplex/db/migrations /tmp
 chown -R gemplex:gemplex /tmp/migrations/
 sudo -u gemplex migrate -database postgres:///gemplex?host=/var/run/postgresql -path /tmp/migrations/ up
 
+echo "Reloading and restarting stuff..."
 systemctl daemon-reload
 
 systemctl enable hodhod
@@ -88,3 +90,5 @@ systemctl enable gemplex
 systemctl restart gemplex
 
 systemctl reload nginx
+
+echo "Done."
