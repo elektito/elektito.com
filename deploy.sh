@@ -19,6 +19,9 @@ for file in ${files}; do
   fi
 done
 
+useradd gemplex || true
+groupadd gemplex-deployment || true
+
 apt update
 apt install -y nginx postgresql-14
 
@@ -51,6 +54,8 @@ cd ..
 
 mkdir -p /var/gemini
 
+chown gemplex:gemplex-deployment root/ -R
+chmod 0730 root/ -R
 cp -r root/* /
 
 rm -rf elektito.com-gemini
@@ -67,9 +72,7 @@ cp elektito.com.cer /etc/gemini/certs/
 cp gemplex.space.key /etc/gemini/certs/
 cp gemplex.space.cer /etc/gemini/certs/
 
-useradd gemplex || true
 mkdir -p /var/lib/gemplex
-chown gemplex:gemplex /var/lib/gemplex
 
 sudo -u postgres psql -c 'create database gemplex' || true
 sudo -u postgres psql -c 'create role gemplex' || true
@@ -79,6 +82,10 @@ echo "Migrating database..."
 cp -r gemplex/db/migrations /tmp
 chown -R gemplex:gemplex /tmp/migrations/
 sudo -u gemplex migrate -database postgres:///gemplex?host=/var/run/postgresql -path /tmp/migrations/ up
+
+echo "Fixing permissions"
+chown gemplex:gemplex-deployment /opt/gemplex/ -R
+chmod 0730 /opt/gemplex/ -R
 
 echo "Reloading and restarting stuff..."
 systemctl daemon-reload
