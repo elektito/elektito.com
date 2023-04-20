@@ -43,7 +43,7 @@ fi
 
 export GOBIN=/usr/local/go/bin
 export GOPROXY=direct
-/usr/local/go/bin/go install github.com/elektito/hodhod@latest
+/usr/local/go/bin/go install git.sr.ht/~elektito/hodhod@latest
 
 rm -rf gemplex
 git clone --depth=1 https://github.com/elektito/gemplex.git
