@@ -46,7 +46,7 @@ export GOPROXY=direct
 /usr/local/go/bin/go install git.sr.ht/~elektito/hodhod@latest
 
 rm -rf gemplex
-git clone --depth=1 https://github.com/elektito/gemplex.git
+git clone --depth=1 https://git.sr.ht/~elektito/gemplex
 cd gemplex
 make release
 make install
@@ -58,13 +58,11 @@ chown gemplex:gemplex-deployment root/ -R
 chmod 0730 root/ -R
 cp -r root/* /
 
+rsync -r --delete gemplex/capsule/ /var/gemini/gemplex.space/
+
 rm -rf elektito.com-gemini
 git clone https://github.com/elektito/elektito.com-gemini.git
 rsync -r --delete elektito.com-gemini/capsule/ /var/gemini/elektito.com/
-
-rm -rf gemplex
-git clone https://github.com/elektito/gemplex.git
-rsync -r --delete gemplex/capsule/ /var/gemini/gemplex.space/
 
 mkdir -p /etc/gemini/certs
 cp elektito.com.key /etc/gemini/certs/
